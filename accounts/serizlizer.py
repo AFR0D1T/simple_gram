@@ -31,3 +31,7 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError()
 
         return user
+
+
+class RefreshSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
