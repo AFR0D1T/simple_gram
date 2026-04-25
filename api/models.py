@@ -9,3 +9,7 @@ class Post(models.Model):
     created_at = models.DateField(auto_now_add=True)
 
 
+class Like(models.Model):
+    user = models.ForeignKey(get_user_model(),
+                             verbose_name='пользовател', related_name='likes', on_delete=models.CASCADE)
+    post = models.ForeignKey('api.Post', on_delete=models.CASCADE, verbose_name='пост', related_name='likes')
