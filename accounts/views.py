@@ -4,10 +4,6 @@ from rest_framework.decorators import permission_classes
 from rest_framework.response import Response
 from accounts.serizlizer import UserSerializer, LoginSerializer, PasswordSerializer
 from rest_framework.decorators import action
-from core.settings import SECRET_KEY
-from datetime import datetime, timedelta
-import uuid
-import jwt
 
 
 class RegistrationViewSet(viewsets.ViewSet):
@@ -22,7 +18,7 @@ class RegistrationViewSet(viewsets.ViewSet):
 class MyProfileViewSet(viewsets.ViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def profile(self, request, *args, **kwargs):
         user = self.request.user
         data = {'id':user.pk,
@@ -31,7 +27,7 @@ class MyProfileViewSet(viewsets.ViewSet):
                 }
         return Response(data, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=['patch'])
+    @action(detail=False, methods=['patch'], permission_classes=[permissions.IsAuthenticated])
     def update_profile(self, request, *args, **kwargs):
         if not request.data:
             return Response({"status": 'No data'}, status=status.HTTP_400_BAD_REQUEST)
@@ -45,7 +41,7 @@ class MyProfileViewSet(viewsets.ViewSet):
 
         return Response({'status': 'successfully'}, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=['patch'])
+    @action(detail=False, methods=['patch'], permission_classes=[permissions.IsAuthenticated])
     def update_password(self, request, *args, **kwargs):
         user = self.request.user
         serializers = PasswordSerializer(data=request.data, partial=True)
