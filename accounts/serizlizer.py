@@ -7,7 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ('first_name', 'last_name', 'username', 'password',)
+        fields = ('email', 'username', 'password',)
 
 
     def create(self, validated_data):
@@ -35,3 +35,13 @@ class LoginSerializer(serializers.Serializer):
 
 class RefreshSerializer(serializers.Serializer):
     refresh = serializers.CharField()
+
+
+class PasswordSerializer(serializers.ModelSerializer):
+    password_old = serializers.CharField(write_only=True)
+    password_new = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = get_user_model()
+        fields = ('password_old', 'password_new')
+
