@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import permission_classes
 from rest_framework.response import Response
-from accounts.serizlizer import UserSerializer, LoginSerializer, PasswordSerializer
+from accounts.serizlizer import UserSerializer, LoginSerializer, PasswordSerializer, UserUpdateSerializer
 from rest_framework.decorators import action
 
 
@@ -33,11 +33,9 @@ class MyProfileViewSet(viewsets.ViewSet):
             return Response({"status": 'No data'}, status=status.HTTP_400_BAD_REQUEST)
 
         user = self.request.user
-        serializers = UserSerializer(data=request.data, partial=True)
+        serializers = UserUpdateSerializer(instance=user, data=request.data, partial=True)
         serializers.is_valid(raise_exception=True)
-
-        user.username = serializers.validated_data.get('username')
-        user.email = serializers.validated_data.get('email')
+        serializers.save()
 
         return Response({'status': 'successfully'}, status=status.HTTP_200_OK)
 

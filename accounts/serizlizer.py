@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
+from rest_framework.exceptions import ValidationError
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -12,6 +13,22 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return self.Meta.model.objects.create_user(**validated_data)
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ('email', 'username', 'first_name', 'last_name')
+
+    def validate(self, attrs):
+        if not attrs:
+            raise ValidationError("No data provided")
+
+        fields = set(self.initial_data.keys()) - set(self.fields.keys())
+        if fields:
+            raise ValidationError(f'Unknow fields: {fields}')
+
+        return attrs
 
 
 class UserNestedSerializer(serializers.ModelSerializer):
